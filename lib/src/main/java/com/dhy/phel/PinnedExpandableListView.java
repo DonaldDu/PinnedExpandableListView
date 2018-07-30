@@ -17,8 +17,8 @@ import android.widget.ExpandableListView;
 public class PinnedExpandableListView extends ExpandableListView implements OnScrollListener {
     private View pinnedGroupView;
     private int pinnedViewHeight;
-    private OnScrollListener onScrollListener;
     private int pinnedGroupViewId;
+    private OnScrollListener onScrollListener;
 
     public PinnedExpandableListView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -68,28 +68,23 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
         }
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        if (pinnedGroupView != null) onMoving(pinnedGroupView.getTop());
-    }
-
     protected void refreshHeader() {
         if (pinnedGroupView == null) return;
         int firstVisiblePos = getFirstVisiblePosition();
         int firstVisibleGroupPos = getPackedPositionGroup(getExpandableListPosition(firstVisiblePos));
         View view = findViewWithTag(firstVisibleGroupPos + 1);//next group
+        int y;
         if (view != null) {
             int top = view.getTop();
             if (top < pinnedViewHeight) {
-                onMoving(top - pinnedViewHeight);
+                y = top - pinnedViewHeight;
             } else {
-                onMoving(0);
+                y = 0;
             }
         } else {
-            onMoving(0);
+            y = 0;
         }
-        updatePinnedView(pinnedGroupView, firstVisibleGroupPos);
+        updatePinnedView(pinnedGroupView, y, firstVisibleGroupPos);
     }
 
     @Override
@@ -105,14 +100,22 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
         }
     }
 
-    private void updatePinnedView(View headerView, int position) {
-        ExpandableListAdapter expandableListAdapter = getExpandableListAdapter();
-        if (expandableListAdapter != null) {
-            expandableListAdapter.getGroupView(position, isGroupExpanded(position), headerView, this);
-        }
+    @Override
+    public void setAdapter(ExpandableListAdapter adapter) {
+        super.setAdapter(adapter);
+        initPinnedGroupView();
+        if (pinnedGroupView != null) updatePinnedView(pinnedGroupView, 0, 0);
     }
 
-    private void onMoving(int top) {
-        pinnedGroupView.setY(top);
+    private int pinnedGroupViewPosition = -1;
+
+    private void updatePinnedView(@NonNull View pinnedGroupView, int y, int position) {
+        if (pinnedGroupView.getY() == y && pinnedGroupViewPosition == position) return;
+        pinnedGroupView.setY(y);
+        ExpandableListAdapter expandableListAdapter = getExpandableListAdapter();
+        if (expandableListAdapter != null) {
+            pinnedGroupViewPosition = position;
+            expandableListAdapter.getGroupView(position, isGroupExpanded(position), pinnedGroupView, this);
+        }
     }
 }
