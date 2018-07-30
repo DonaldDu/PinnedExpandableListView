@@ -65,8 +65,18 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
         ViewParent parent = getParent();
         if (parent instanceof View) {
             pinnedGroupView = ((View) parent).findViewById(pinnedGroupViewId);
+            if (pinnedGroupView != null) pinnedGroupView.setOnClickListener(onClickListener);
         }
     }
+
+    private final View.OnClickListener onClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            boolean expanded = isGroupExpanded(pinnedGroupViewPosition);
+            if (expanded) collapseGroup(pinnedGroupViewPosition);
+            else expandGroup(pinnedGroupViewPosition);
+        }
+    };
 
     protected void refreshHeader() {
         if (pinnedGroupView == null) return;
@@ -104,7 +114,14 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
     public void setAdapter(ExpandableListAdapter adapter) {
         super.setAdapter(adapter);
         initPinnedGroupView();
-        if (pinnedGroupView != null) updatePinnedView(pinnedGroupView, 0, 0);
+        if (pinnedGroupView != null) {
+            if (adapter == null || adapter.isEmpty()) {
+                pinnedGroupView.setVisibility(GONE);
+            } else {
+                pinnedGroupView.setVisibility(VISIBLE);
+                updatePinnedView(pinnedGroupView, 0, 0);
+            }
+        }
     }
 
     private int pinnedGroupViewPosition = -1;
