@@ -1,4 +1,4 @@
-# PinnedExpandableListView
+# PinnedExpandableListView [![](https://jitpack.io/v/DonaldDu/PinnedExpandableListView.svg)](https://jitpack.io/#DonaldDu/PinnedExpandableListView)
 必须设置pinnedGroupViewId
 ```
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
