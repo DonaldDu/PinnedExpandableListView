@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dhy.phel.PinnedExpandableListView;
+
 import java.util.List;
 
-public class MyexpandableListAdapter extends BaseExpandableListAdapter {
+public class MyexpandableListAdapter extends BaseExpandableListAdapter implements PinnedExpandableListView.PinnedGroup {
     private LayoutInflater inflater;
     private List<Group> groupList;
     private List<List<People>> childList;

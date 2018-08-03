@@ -104,7 +104,7 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (totalItemCount > 0) refreshHeader();
+        if (totalItemCount > 0 && pinnedEnable) refreshHeader();
         if (onScrollListener != null) {
             onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
@@ -113,8 +113,13 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
     @Override
     public void setAdapter(ExpandableListAdapter adapter) {
         super.setAdapter(adapter);
+        setPinnedEnable(false);
+    }
+
+    public <T extends PinnedGroup & ExpandableListAdapter> void setAdapter(T adapter) {
+        super.setAdapter(adapter);
         initPinnedGroupView();
-        if (pinnedGroupView != null) {
+        if (pinnedGroupView != null && pinnedEnable) {
             if (adapter == null || adapter.isEmpty()) {
                 pinnedGroupView.setVisibility(GONE);
             } else {
@@ -122,6 +127,13 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
                 updatePinnedView(pinnedGroupView, 0, 0);
             }
         }
+    }
+
+    private boolean pinnedEnable = true;
+
+    public void setPinnedEnable(boolean enable) {
+        pinnedEnable = enable;
+        if (pinnedGroupView != null) pinnedGroupView.setVisibility(enable ? VISIBLE : GONE);
     }
 
     private int pinnedGroupViewPosition = -1;
@@ -134,5 +146,11 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
             pinnedGroupViewPosition = position;
             expandableListAdapter.getGroupView(position, isGroupExpanded(position), pinnedGroupView, this);
         }
+    }
+
+    /**
+     * you must init groupView.setTag(groupPosition) for findViewWithTag(groupPosition)
+     */
+    public interface PinnedGroup {
     }
 }

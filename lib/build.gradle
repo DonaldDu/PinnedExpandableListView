@@ -1,9 +1,19 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
+publish {
+    userOrg = 'userOrg'
+    groupId = 'com.github.DonaldDu'
+    artifactId = 'PinnedExpandableListView'
+    publishVersion = '0.9.1'
+    website = 'https://github.com/DonaldDu/PinnedExpandableListView'
+    desc = 'desc'
+}
 android {
     compileSdkVersion 27
     defaultConfig {
         minSdkVersion 16
+        //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
