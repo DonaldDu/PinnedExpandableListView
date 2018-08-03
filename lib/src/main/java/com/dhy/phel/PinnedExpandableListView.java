@@ -116,7 +116,7 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
         setPinnedEnable(false);
     }
 
-    public <T extends PinnedGroup & ExpandableListAdapter> void setAdapter(T adapter) {
+    public void setAdapter(PinnedExpandableListAdapter adapter) {
         super.setAdapter(adapter);
         initPinnedGroupView();
         if (pinnedGroupView != null && pinnedEnable) {
@@ -148,9 +148,5 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
         }
     }
 
-    /**
-     * you must init groupView.setTag(groupPosition) for findViewWithTag(groupPosition)
-     */
-    public interface PinnedGroup {
-    }
+
 }
