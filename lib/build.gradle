@@ -5,7 +5,7 @@ publish {
     userOrg = 'userOrg'
     groupId = 'com.github.DonaldDu'
     artifactId = 'PinnedExpandableListView'
-    publishVersion = '0.9.3'
+    publishVersion = '0.9.5'
     website = 'https://github.com/DonaldDu/PinnedExpandableListView'
     desc = 'desc'
 }

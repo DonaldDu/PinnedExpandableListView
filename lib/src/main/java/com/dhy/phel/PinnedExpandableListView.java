@@ -82,6 +82,7 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
         if (pinnedGroupView == null) return;
         int firstVisiblePos = getFirstVisiblePosition();
         int firstVisibleGroupPos = getPackedPositionGroup(getExpandableListPosition(firstVisiblePos));
+        if (firstVisibleGroupPos < 0) return;
         View view = findViewWithTag(firstVisibleGroupPos + 1);//next group
         int y;
         if (view != null) {
@@ -137,14 +138,19 @@ public class PinnedExpandableListView extends ExpandableListView implements OnSc
     }
 
     private int pinnedGroupViewPosition = -1;
+    private boolean expanded;
+    @SuppressWarnings("FieldCanBeLocal")
+    private Boolean expandedTemp;
 
     private void updatePinnedView(@NonNull View pinnedGroupView, int y, int position, boolean force) {
-        if (force || pinnedGroupView.getY() != y || pinnedGroupViewPosition != position) {
+        expandedTemp = null;
+        if (force || pinnedGroupView.getY() != y || pinnedGroupViewPosition != position || expanded != (expandedTemp = isGroupExpanded(position))) {
             pinnedGroupView.setY(y);
             ExpandableListAdapter expandableListAdapter = getExpandableListAdapter();
             if (expandableListAdapter != null) {
+                expanded = expandedTemp == null ? isGroupExpanded(position) : expandedTemp;
                 pinnedGroupViewPosition = position;
-                expandableListAdapter.getGroupView(position, isGroupExpanded(position), pinnedGroupView, this);
+                expandableListAdapter.getGroupView(position, expanded, pinnedGroupView, this);
             }
         }
     }
